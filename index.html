@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le Quynh Ngoc Tram — Data & Market Analyst</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0A09;
+    --bg-alt: #141412;
+    --line: #2A2A26;
+    --text: #F5F4EF;
+    --muted: #8F8D82;
+    --accent: #C9A44C;
+    --font-display: 'Big Shoulders Display', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg); color:var(--text); font-family:var(--font-body); line-height:1.6; overflow-x:hidden;}
+  a{color:inherit; text-decoration:none;}
+  ::selection{background:var(--accent); color:#0A0A09;}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:3px;}
+  .wrap{max-width:1140px; margin:0 auto; padding:0 28px;}
+
+  /* NAV */
+  nav{position:fixed; top:0; left:0; right:0; z-index:50; background:rgba(10,10,9,0.88); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+  .nav-inner{max-width:1140px; margin:0 auto; padding:18px 28px; display:flex; justify-content:space-between; align-items:center;}
+  .nav-logo{font-family:var(--font-mono); font-size:13px; letter-spacing:0.06em; color:var(--text);}
+  .nav-logo span{color:var(--accent);}
+  .nav-links{display:flex; gap:26px; list-style:none;}
+  .nav-links a{font-family:var(--font-mono); font-size:12px; color:var(--muted); letter-spacing:0.04em; transition:color .2s;}
+  .nav-links a:hover{color:var(--text);}
+  .nav-badge{font-family:var(--font-mono); font-size:11px; color:var(--accent); border:1px solid var(--accent); padding:6px 12px; border-radius:20px; display:flex; align-items:center; gap:7px;}
+  .nav-badge .dot{width:6px; height:6px; background:var(--accent); border-radius:50%; animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+  /* TICKER — signature element */
+  .ticker-wrap{border-bottom:1px solid var(--line); background:var(--bg-alt); overflow:hidden; white-space:nowrap; margin-top:64px;}
+  .ticker{display:inline-block; padding:9px 0; font-family:var(--font-mono); font-size:11.5px; letter-spacing:0.05em; color:var(--muted); animation:ticker 32s linear infinite;}
+  .ticker span{margin:0 22px;}
+  .ticker span.hl{color:var(--accent);}
+  @keyframes ticker{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+  /* HERO */
+  .hero{padding:90px 0 70px;}
+  .hero-loc{font-family:var(--font-mono); font-size:12px; color:var(--muted); letter-spacing:0.04em; margin-bottom:28px;}
+  .hero-loc strong{color:var(--text);}
+  h1.name{
+    font-family:var(--font-display); font-weight:900; text-transform:uppercase;
+    font-size:clamp(3.2rem, 11vw, 8.2rem); line-height:0.92; letter-spacing:-0.01em;
+  }
+  h1.name .line2{color:var(--accent);}
+  .role-line{
+    font-family:var(--font-mono); font-size:14px; color:var(--muted); letter-spacing:0.08em;
+    text-transform:uppercase; margin:20px 0 26px; display:flex; align-items:center; gap:10px;
+  }
+  .role-line::before{content:'/'; color:var(--accent);}
+  .hero-desc{font-size:17px; color:var(--muted); max-width:560px; margin-bottom:38px;}
+  .hero-desc strong{color:var(--text); font-weight:600;}
+  .hero-cta{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:36px;}
+  .btn{font-family:var(--font-mono); font-size:12.5px; padding:13px 24px; letter-spacing:0.03em; transition:all .2s; display:inline-flex; align-items:center; gap:8px;}
+  .btn-primary{background:var(--accent); color:#0A0A09; font-weight:500;}
+  .btn-primary:hover{background:#ddb85f;}
+  .btn-ghost{border:1px solid var(--line); color:var(--text);}
+  .btn-ghost:hover{border-color:var(--accent); color:var(--accent);}
+  .hero-links{display:flex; gap:22px; flex-wrap:wrap; font-family:var(--font-mono); font-size:12.5px; color:var(--muted);}
+  .hero-links a{border-bottom:1px solid var(--line); padding-bottom:2px; transition:color .2s, border-color .2s;}
+  .hero-links a:hover{color:var(--accent); border-color:var(--accent);}
+
+  section{padding:90px 0; border-bottom:1px solid var(--line);}
+  .sec-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:48px; flex-wrap:wrap; gap:12px;}
+  .sec-eyebrow{font-family:var(--font-mono); font-size:12px; color:var(--accent); letter-spacing:0.08em;}
+  .sec-count{font-family:var(--font-mono); font-size:12px; color:var(--muted);}
+  h2{font-family:var(--font-display); font-weight:700; font-size:clamp(1.8rem,3.4vw,2.6rem); text-transform:uppercase; letter-spacing:0.01em;}
+
+  /* EXPERIENCE / EDUCATION — numbered rows (real chronology) */
+  .timeline-item{display:grid; grid-template-columns:70px 1fr; gap:24px; padding:32px 0; border-top:1px solid var(--line);}
+  .timeline-item:first-of-type{border-top:none;}
+  .ti-num{font-family:var(--font-display); font-size:32px; color:var(--line); font-weight:700;}
+  .ti-date{font-family:var(--font-mono); font-size:12px; color:var(--accent); letter-spacing:0.04em; margin-bottom:6px; display:block;}
+  .ti-role{font-size:19px; font-weight:600; margin-bottom:3px;}
+  .ti-org{color:var(--muted); font-size:14px; margin-bottom:14px;}
+  .ti-bullets{list-style:none; display:flex; flex-direction:column; gap:9px;}
+  .ti-bullets li{color:var(--muted); font-size:14.5px; padding-left:16px; position:relative; max-width:640px;}
+  .ti-bullets li::before{content:'—'; position:absolute; left:0; color:var(--accent);}
+  .ti-bullets li strong{color:var(--text);}
+  .ti-meta{display:flex; gap:18px; margin-top:14px; flex-wrap:wrap;}
+  .ti-meta span{font-family:var(--font-mono); font-size:11.5px; color:var(--muted);}
+  .ti-meta span strong{color:var(--accent);}
+
+  /* SKILLS */
+  .skill-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:36px;}
+  .skill-group h3{font-family:var(--font-mono); font-size:12px; color:var(--accent); letter-spacing:0.06em; margin-bottom:16px; text-transform:uppercase;}
+  .chips{display:flex; flex-wrap:wrap; gap:9px;}
+  .chip{font-size:13px; padding:7px 14px; border:1px solid var(--line); color:var(--muted); transition:all .2s;}
+  .chip:hover{border-color:var(--accent); color:var(--text);}
+
+  /* PROJECTS */
+  .proj-list{display:flex; flex-direction:column;}
+  .proj-item{display:grid; grid-template-columns:60px 1fr; gap:24px; padding:30px 0; border-top:1px solid var(--line);}
+  .proj-item:first-child{border-top:none;}
+  .proj-num{font-family:var(--font-display); font-size:28px; color:var(--line); font-weight:700;}
+  .proj-title{font-size:19px; font-weight:600; margin-bottom:8px;}
+  .proj-hubs{font-family:var(--font-mono); font-size:11px; color:var(--accent); letter-spacing:0.04em; margin-bottom:10px; text-transform:uppercase;}
+  .proj-desc{color:var(--muted); font-size:14.5px; max-width:640px;}
+  .proj-note{font-family:var(--font-mono); font-size:11px; color:var(--muted); opacity:0.65; margin-top:38px;}
+
+  /* BEYOND WORK */
+  .beyond-grid{display:flex; flex-wrap:wrap; gap:10px;}
+  .beyond-tag{font-family:var(--font-mono); font-size:12px; padding:9px 16px; border:1px solid var(--line); color:var(--muted);}
+  .beyond-tag strong{color:var(--accent);}
+
+  /* CONTACT */
+  #contact{border-bottom:none;}
+  .contact-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:50px;}
+  .contact-big{font-family:var(--font-display); font-weight:900; text-transform:uppercase; font-size:clamp(2.2rem,5.5vw,4rem); line-height:1.02; margin-bottom:22px;}
+  .contact-big span{color:var(--accent);}
+  .contact-sub{color:var(--muted); max-width:460px; margin-bottom:30px;}
+  .contact-info{display:flex; flex-direction:column; gap:22px;}
+  .ci-row{border-top:1px solid var(--line); padding-top:16px;}
+  .ci-label{font-family:var(--font-mono); font-size:11px; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:6px;}
+  .ci-value{font-size:16px;}
+  .ci-value a:hover{color:var(--accent);}
+
+  footer{padding:28px 0; text-align:center; font-family:var(--font-mono); font-size:11.5px; color:var(--muted);}
+
+  @media (max-width:760px){
+    .nav-links{display:none;}
+    .skill-grid, .contact-grid{grid-template-columns:1fr;}
+    .timeline-item, .proj-item{grid-template-columns:40px 1fr;}
+    .ti-num, .proj-num{font-size:22px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="#top">LQNT<span>.</span>DATA</a>
+    <ul class="nav-links">
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <span class="nav-badge"><span class="dot"></span>OPEN TO REMOTE</span>
+  </div>
+</nav>
+
+<div class="ticker-wrap" id="top">
+  <div class="ticker">
+    <span>OCCUPANCY OPTIMIZATION</span><span class="hl">·</span>
+    <span>DEMAND FORECASTING</span><span class="hl">·</span>
+    <span>REVENUE MANAGEMENT</span><span class="hl">·</span>
+    <span>STAKEHOLDER NEGOTIATION</span><span class="hl">·</span>
+    <span>TABLEAU</span><span class="hl">·</span>
+    <span>EXCEL PIVOT / POWER QUERY</span><span class="hl">·</span>
+    <span>SPSS</span><span class="hl">·</span>
+    <span>CROSS-FUNCTIONAL KPI TRACKING</span><span class="hl">·</span>
+    <span>OPEN TO REMOTE</span><span class="hl">·</span>
+    <span>OCCUPANCY OPTIMIZATION</span><span class="hl">·</span>
+    <span>DEMAND FORECASTING</span><span class="hl">·</span>
+    <span>REVENUE MANAGEMENT</span><span class="hl">·</span>
+    <span>STAKEHOLDER NEGOTIATION</span><span class="hl">·</span>
+    <span>TABLEAU</span><span class="hl">·</span>
+    <span>EXCEL PIVOT / POWER QUERY</span><span class="hl">·</span>
+    <span>SPSS</span><span class="hl">·</span>
+    <span>CROSS-FUNCTIONAL KPI TRACKING</span><span class="hl">·</span>
+    <span>OPEN TO REMOTE</span><span class="hl">·</span>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-loc">HO CHI MINH CITY, VN · 10.8°N — <strong>preparing to relocate:</strong> Palermo, IT (MSc Tourism)</div>
+    <h1 class="name">LE QUYNH NGOC<br><span class="line2">TRAM</span></h1>
+    <div class="role-line">Data & Market Analyst · OTA / Hospitality</div>
+    <p class="hero-desc">Turning occupancy, pricing, and demand signals into revenue decisions. Currently managing hotel partner portfolios across <strong>Hanoi, Da Lat, and Da Nang</strong> at Traveloka Vietnam.</p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">View Work →</a>
+      <a href="Le-Quynh-Ngoc-Tram-CV.pdf" class="btn btn-ghost" download>Download CV</a>
+    </div>
+    <div class="hero-links">
+      <a href="mailto:lequynhngoctram.startpoint@gmail.com">lequynhngoctram.startpoint@gmail.com</a>
+      <a href="tel:+84889743209">+84 889 743 209</a>
+      <a href="#">[LinkedIn — add link]</a>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-eyebrow">01 / Track Record</span>
+      <h2>Experience</h2>
+      <span class="sec-count">(01)</span>
+    </div>
+    <div class="timeline-item">
+      <div class="ti-num">01</div>
+      <div>
+        <span class="ti-date">2023 — PRESENT</span>
+        <div class="ti-role">Market Support — Accommodation Sourcing Strategy</div>
+        <div class="ti-org">Traveloka Vietnam · Ho Chi Minh City</div>
+        <ul class="ti-bullets">
+          <li><strong>Market Analysis & Data Visualization</strong> — managed hotel partner portfolios across key hubs (Hanoi, Da Lat, Da Nang); used Tableau and Excel dashboards to track performance metrics and market trends.</li>
+          <li><strong>Revenue Management</strong> — optimized pricing strategies and inventory allocation based on demand forecasting and historical data analysis.</li>
+          <li><strong>Strategic Consulting</strong> — translated complex data insights into actionable business recommendations to improve occupancy rates and revenue for partners.</li>
+          <li><strong>KPI Monitoring</strong> — collaborated with cross-functional teams to monitor KPIs and implement partner retention strategies.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-eyebrow">02 / Foundation</span>
+      <h2>Education</h2>
+      <span class="sec-count">(02)</span>
+    </div>
+
+    <div class="timeline-item">
+      <div class="ti-num">01</div>
+      <div>
+        <span class="ti-date">2017 — 2023</span>
+        <div class="ti-role">Bachelor of Industrial Management</div>
+        <div class="ti-org">Ho Chi Minh City University of Technology — VNU-HCM (HCMUT)</div>
+        <ul class="ti-bullets">
+          <li>Relevant modules: <strong>Decision Support & Business Intelligence Systems</strong>, Statistics in Business, Management Information Systems.</li>
+          <li>Thesis: <strong>"Motivational Drivers of Customer Active and Passive Engagement Behaviors in Social-Media Based Brand Communities"</strong> — thesis grade 8.8/10.</li>
+          <li>Scholarship: awarded to Top 5 students with the highest GPA, Semester I/2021.</li>
+        </ul>
+        <div class="ti-meta">
+          <span>GPA <strong>7.4 / 10</strong></span>
+          <span>THESIS <strong>8.8 / 10</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="ti-num">02</div>
+      <div>
+        <span class="ti-date">2026 — UPCOMING</span>
+        <div class="ti-role">MSc in Tourism (planned)</div>
+        <div class="ti-org">University of Palermo, Italy</div>
+        <ul class="ti-bullets">
+          <li>Deepening academic grounding in tourism while continuing to work in data/market analysis — open to remote roles during this period.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-eyebrow">03 / Toolkit</span>
+      <h2>Skills</h2>
+      <span class="sec-count">(03)</span>
+    </div>
+    <div class="skill-grid">
+      <div class="skill-group">
+        <h3>Data Analysis & Visualization</h3>
+        <div class="chips">
+          <span class="chip">Tableau (Intermediate)</span>
+          <span class="chip">Excel (Advanced — Pivot Tables, Power Query)</span>
+          <span class="chip">SPSS</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h3>Systems & Productivity</h3>
+        <div class="chips">
+          <span class="chip">CRM Platforms</span>
+          <span class="chip">Jira</span>
+          <span class="chip">Enterprise Extranet Systems</span>
+          <span class="chip">MS Office Suite</span>
+          <span class="chip">PowerPoint (advanced)</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h3>Communication & Stakeholders</h3>
+        <div class="chips">
+          <span class="chip">Stakeholder Management</span>
+          <span class="chip">Analytical Communication</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h3>Strategic & Organisational</h3>
+        <div class="chips">
+          <span class="chip">Project Coordination</span>
+          <span class="chip">Strategic Thinking</span>
+          <span class="chip">English (IELTS 6.0)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-eyebrow">04 / Selected Work</span>
+      <h2>Projects</h2>
+      <span class="sec-count">(03)</span>
+    </div>
+    <div class="proj-list">
+      <div class="proj-item">
+        <div class="proj-num">01</div>
+        <div>
+          <div class="proj-title">Hotel Partner Performance Dashboard</div>
+          <div class="proj-hubs">Hanoi · Da Lat · Da Nang</div>
+          <p class="proj-desc">Built Tableau and Excel dashboards to track occupancy, pricing, and booking trends across hotel partner portfolios in three key hubs, giving partners a single view of performance.</p>
+        </div>
+      </div>
+      <div class="proj-item">
+        <div class="proj-num">02</div>
+        <div>
+          <div class="proj-title">Dynamic Pricing & Inventory Optimization</div>
+          <div class="proj-hubs">Revenue Management</div>
+          <p class="proj-desc">Adjusted pricing and inventory allocation based on demand forecasting and historical booking data, improving occupancy for partner hotels.</p>
+        </div>
+      </div>
+      <div class="proj-item">
+        <div class="proj-num">03</div>
+        <div>
+          <div class="proj-title">Partner Retention KPI Framework</div>
+          <div class="proj-hubs">Cross-Functional</div>
+          <p class="proj-desc">Worked with cross-functional teams to monitor KPIs and flag at-risk partners early, supporting retention strategy.</p>
+        </div>
+      </div>
+    </div>
+    <p class="proj-note">* Mô tả dựa trên phạm vi công việc thực tế tại Traveloka — thêm số liệu cụ thể nếu có thể công khai (không dùng dữ liệu nội bộ nhạy cảm).</p>
+  </div>
+</section>
+
+<section id="beyond">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-eyebrow">05 / Beyond Work</span>
+      <h2>Extracurricular</h2>
+      <span class="sec-count">(05)</span>
+    </div>
+    <div class="beyond-grid">
+      <span class="beyond-tag"><strong>Vovinam</strong> — Lam Dai Tam, Blue Belt (Level 3)</span>
+      <span class="beyond-tag"><strong>Xiaomi Pop Run</strong> — 10km, 2025</span>
+      <span class="beyond-tag"><strong>Vung Tau City Trail</strong> — 7km</span>
+      <span class="beyond-tag"><strong>BK Marathon</strong> — 5km, 2022</span>
+      <span class="beyond-tag"><strong>Intel Tech Fun Run</strong> — 5km, 2022</span>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="contact-grid">
+      <div>
+        <div class="contact-big">LET'S<br>WORK<br><span>TOGETHER</span></div>
+        <p class="contact-sub">Open to remote or hybrid roles in data & market analysis — especially travel and hospitality. Preparing to relocate to Palermo, Italy for MSc studies.</p>
+        <a href="mailto:lequynhngoctram.startpoint@gmail.com" class="btn btn-primary">Send an Email →</a>
+      </div>
+      <div class="contact-info">
+        <div class="ci-row">
+          <div class="ci-label">Email</div>
+          <div class="ci-value"><a href="mailto:lequynhngoctram.startpoint@gmail.com">lequynhngoctram.startpoint@gmail.com</a></div>
+        </div>
+        <div class="ci-row">
+          <div class="ci-label">Phone</div>
+          <div class="ci-value"><a href="tel:+84889743209">+84 889 743 209</a></div>
+        </div>
+        <div class="ci-row">
+          <div class="ci-label">Location</div>
+          <div class="ci-value">Ho Chi Minh City, Vietnam</div>
+        </div>
+        <div class="ci-row">
+          <div class="ci-label">Availability</div>
+          <div class="ci-value">Open to remote work</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 Le Quynh Ngoc Tram — Data & Market Analyst</footer>
+
+</body>
+</html>
